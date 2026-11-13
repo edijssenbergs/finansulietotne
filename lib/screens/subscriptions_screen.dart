@@ -4,6 +4,7 @@ import '../themes/app_theme.dart';
 import '../widgets/subscription_card.dart';
 import 'add_subscription_screen.dart';
 import 'subscription_detail_screen.dart';
+import 'notifications_screen.dart';
 
 // Četri saraksta stāvokļi
 enum SubsState { loading, empty, data, error }
@@ -18,7 +19,7 @@ class SubscriptionsScreen extends StatefulWidget {
 
 class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
   SubsState _state = SubsState.data;
-  final List<Subscription> _items = demoSubscriptions();
+  final List<Subscription> _items = sharedSubscriptions;
 
   double get _total => _items.fold<double>(0, (sum, s) => sum + s.amount);
 
@@ -109,7 +110,27 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Abonementi', style: text.headlineMedium),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text('Abonementi', style: text.headlineMedium),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const NotificationsScreen(),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.notifications_none),
+                          color: AppColors.primary,
+                          tooltip: 'Paziņojumi',
+                        ),
+                      ],
+                    ),
                     Text(_subtitle, style: text.bodyLarge?.copyWith(
                       color: AppColors.textSecondary,
                     )),
