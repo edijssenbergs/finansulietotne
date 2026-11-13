@@ -3,7 +3,6 @@ import '../models/subscription.dart';
 import '../themes/app_theme.dart';
 import '../widgets/app_text_field.dart';
 
-
 // S-07: Pievienot abonementu (arī rediģēšanai, ja padots "initial")
 class AddSubscriptionScreen extends StatefulWidget {
   final Subscription? initial;
@@ -19,9 +18,12 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
 
+  String? _category;
+
   String? _nameError;
   String? _amountError;
   String? _dateError;
+  String? _categoryError;
 
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       _nameController.text = s.name;
       _amountController.text = s.amount.toStringAsFixed(2).replaceAll('.', ',');
       _dateController.text = s.dateText;
+      _category = s.category;
     }
   }
 
@@ -74,9 +77,13 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
       _amountError =
           (amount == null || amount <= 0) ? 'Ievadi summu, piemēram, 9,99' : null;
       _dateError = date == null ? 'Ievadi datumu formātā DD.MM.GGGG.' : null;
+      _categoryError = _category == null ? 'Izvēlies kategoriju' : null;
     });
 
-    if (_nameError != null || _amountError != null || _dateError != null) {
+    if (_nameError != null ||
+        _amountError != null ||
+        _dateError != null ||
+        _categoryError != null) {
       return;
     }
 
@@ -87,6 +94,7 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
         amount: amount!,
         nextPayment: date!,
         rarelyUsed: widget.initial?.rarelyUsed ?? false,
+        category: _category!,
       ),
     );
   }
@@ -136,6 +144,47 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
                 errorText: _dateError,
                 keyboardType: TextInputType.datetime,
               ),
+              const SizedBox(height: AppSpacing.m),
+
+              // Kategorijas izvēle
+              Text('Kategorija', style: text.bodyLarge),
+              const SizedBox(height: AppSpacing.xs),
+              Wrap(
+                spacing: AppSpacing.s,
+                runSpacing: AppSpacing.s,
+                children: subscriptionCategories.map((c) {
+                  final selected = _category == c;
+                  return ChoiceChip(
+                    label: Text(c),
+                    selected: selected,
+                    showCheckmark: false,
+                    selectedColor: AppColors.primary,
+                    backgroundColor: AppColors.background,
+                    side: const BorderSide(color: AppColors.border),
+                    labelStyle: TextStyle(
+                      color: selected ? Colors.white : AppColors.textMain,
+                    ),
+                    onSelected: (_) {
+                      setState(() {
+                        _category = c;
+                        _categoryError = null;
+                      });
+                    },
+                  );
+                }).toList(),
+              ),
+              if (_categoryError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppSpacing.xs),
+                  child: Text(
+                    _categoryError!,
+                    style: const TextStyle(
+                      color: AppColors.error,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+
               const SizedBox(height: AppSpacing.l),
               ElevatedButton(
                 onPressed: _save,

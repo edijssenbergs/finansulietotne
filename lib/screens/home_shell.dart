@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../themes/app_theme.dart';
 import 'subscriptions_screen.dart';
+import 'expense_chart_screen.dart';
+import 'settings_screen.dart';
 
 // Galvenais ietvars ar apakšējo navigāciju
 class HomeShell extends StatefulWidget {
@@ -18,10 +20,11 @@ class _HomeShellState extends State<HomeShell> {
     return Scaffold(
       body: IndexedStack(
         index: _index,
-        children: const [
-          SubscriptionsScreen(),
-          _PlaceholderPage(title: 'Izdevumu grafiks'),
-          _PlaceholderPage(title: 'Konta iestatījumi'),
+        children: [
+          const SubscriptionsScreen(),
+          // Bez "const", lai grafiks pārzīmējas ar jaunākajiem datiem
+          ExpenseChartScreen(),
+          const SettingsScreen(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -46,25 +49,6 @@ class _HomeShellState extends State<HomeShell> {
             label: 'Iestatījumi',
           ),
         ],
-      ),
-    );
-  }
-}
-
-// Pagaidu ekrāns, kamēr grafiks un iestatījumi nav uztaisīti
-class _PlaceholderPage extends StatelessWidget {
-  final String title;
-
-  const _PlaceholderPage({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.l),
-          child: Text(title, style: Theme.of(context).textTheme.headlineMedium),
-        ),
       ),
     );
   }

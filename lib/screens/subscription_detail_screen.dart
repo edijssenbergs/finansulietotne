@@ -151,6 +151,13 @@ class _SubscriptionDetailScreenState extends State<SubscriptionDetailScreen> {
                         color: AppColors.textSecondary,
                       ),
                     ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      'Kategorija: ${_sub.category}',
+                      style: text.bodyLarge?.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ],
                 ),
               ),
